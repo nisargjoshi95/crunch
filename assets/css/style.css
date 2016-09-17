@@ -1,4 +1,4 @@
-html, body, .row, .sidebar, .main-content {
+html, body, .row, .sidebar, .main-content, #map {
   height: 100%;
 }
 
