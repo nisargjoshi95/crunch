@@ -31,35 +31,34 @@
         <div class="input-field col s12">
           <select>
             <option value="" disabled selected>I have...</option>
-            <option value="1">30 minutes</option>
-            <option value="2">1 hour</option>
-            <option value="3">1.5 hours</option>
-            <option value="4">2 hours</option>
+            <option value="1">30 min</option>
+            <option value="2">1 hr</option>
+            <option value="3">1.5 hrs</option>
+            <option value="4">2 hrs</option>
+            <option value="5">No Rush</option>
           </select>
         </div>
         <div class="input-field col s12">
-          <select>
+          <select id='travel'>
             <option value="" disabled selected>I'll be...</option>
-            <option value="1">Walking</option>
-            <option value="2">Driving</option>
-            <option value="3">Bicycling</option>
-            <option value="4">Using Public Transportation</option>
+            <option value="Walking">Walking</option>
+            <option value="Driving">Driving</option>
+            <option value="Bicycling">Bicycling</option>
+            <option value="Transit">Transit</option>
           </select>
         </div>
-        <div class="input-field col s12" id="submitButton">
-          <a class="waves-effect waves-light btn-large deep-purple"><i class="material-icons left">search</i>Find places!</a>
+        <div class="input-field col s12">
+          <a class="waves-effect waves-light btn-large deep-purple" id='search'><i class="material-icons left">search</i>Find places!</a>
         </div>
     </div>
-    <div class="col s8 grey" id="map">
+    <div class="col s8 grey main-content">
+    <div id="map" style="width:100%;height:100%;"></div>
     </div>
   </div>
   <!--Import jQuery before materialize.js-->
-  <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5eqd8ID2uwfcgJ1HDDZLxzvThcV6Kx1A&libraries=places"></script>
   <script type="text/javascript" src="assets/js/materialize.min.js"></script>
-  <script type="text/javascript" src="assets/js/sha1.js"></script>
-  <script type="text/javascript" src="assets/js/OAuth.js"></script>
-  <script type="text/javascript" src="assets/js/yelp.js"></script>
   <script type="text/javascript" src="assets/js/crunch.js"></script>
 </body>
 </html>
