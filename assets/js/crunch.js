@@ -34,7 +34,7 @@ $(document).ready(function() {
 	}
 	// on click, mark startpoint with a marker and recenter to currentLoc
 
-	function codeAddress(){
+	function codeAddress() {
 	  geocoder = new google.maps.Geocoder();
 	  var address = $('#currentLoc').val().trim();
 	  geocoder.geocode({'address':address},function(results, status){
@@ -71,15 +71,18 @@ $(document).ready(function() {
 		        });
 
 		        google.maps.event.addListener(marker, 'click', function() {
-		          infowindow.setContent(place.name);
+		          getTime(place, function (error, travelTime) {
+		          	if (error) console.log('got an error', error);
+		          	console.log(travelTime);
+		          	infowindow.setContent(place.name + '<br>' + travelTime);
+		          
+		          });
 		          infowindow.open(map, this);
 		        });
 		      }
 	    }
 	  })
 	};
-
-
 
 	//marker
 	$('#search').on('click',function(){
@@ -113,3 +116,31 @@ $(document).ready(function() {
 
 	});
 });
+
+function getTime(clicked, callback) {
+
+	var start = $('#currentLoc').val().trim();
+	var end = clicked.geometry.location;
+	var travel = $('#travel').val().trim().toUpperCase();
+
+	var request = {
+		origin: start,
+		destination: end,
+		drivingOptions: {
+			departureTime: new Date(),
+			trafficModel: 'pessimistic'
+		},
+		travelMode: travel,
+		unitSystem: google.maps.UnitSystem.IMPERIAL
+	};
+
+	var directionsService = new google.maps.DirectionsService();
+	directionsService.route(request, function(result, status) {
+		if (status == 'OK') {
+			// Return travel time
+			callback(null, result.routes[0].legs[0].duration.text);
+		} else {
+			callback('Status not okay.');
+		}
+	});
+}
