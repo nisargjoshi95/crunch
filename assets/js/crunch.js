@@ -52,7 +52,7 @@ $(document).ready(function() {
 		  	var service = new google.maps.places.PlacesService(map);
 		      service.nearbySearch({
 		          location: map.center,
-		          radius: 500,
+		          radius: 20000,
 		          type: ['restaurant'],
 		          name: keyTerm
 		        }, callback);
@@ -64,17 +64,21 @@ $(document).ready(function() {
 		        }
 		      }
 		      function createMarker(place) {
+		      	  var photos = place.photos;
+				  if (!photos) {
+				    return;
+  					}
+  				var icon = photos[0].getUrl({'maxWidth': 50, 'maxHeight': 50})
 		        var placeLoc = place.geometry.location;
 		        var marker = new google.maps.Marker({
 		          map: map,
 		          position: place.geometry.location
-		        });
+		      });
 
 		        google.maps.event.addListener(marker, 'click', function() {
 		          getTime(place, function (error, travelTime) {
 		          	if (error) console.log('got an error', error);
-		          	console.log(travelTime);
-		          	infowindow.setContent(place.name + '<br>' + travelTime);
+		          	infowindow.setContent(place.name + '<br>' + travelTime + '<br>' + 'Price: ' + place.price_level + '<br>' + 'rating: ' + place.rating);
 		          
 		          });
 		          infowindow.open(map, this);
@@ -136,6 +140,7 @@ function getTime(clicked, callback) {
 
 	var directionsService = new google.maps.DirectionsService();
 	directionsService.route(request, function(result, status) {
+		// so this result object can be used to display the directions
 		if (status == 'OK') {
 			// Return travel time
 			callback(null, result.routes[0].legs[0].duration.text);
