@@ -60,6 +60,11 @@ $(document).ready(function() {
 				function callback(results, status) {
 					if (status === google.maps.places.PlacesServiceStatus.OK) {
 						for (var i = 0; i < results.length; i++) {
+							var img;
+							getYelp(results[i].name, results[i].vicinity, function(error, data) {
+								img = (data.businesses[0].image_url);
+								console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
+							});
 							createMarker(results[i]);
 						}
 					}
@@ -80,7 +85,7 @@ $(document).ready(function() {
 					google.maps.event.addListener(marker, 'click', function() {
 						getTime(place, function (error, travelTime) {
 							if (error) console.log('got an error', error);
-							infowindow.setContent(place.name + '<br>' + travelTime + '<br>' + 'Price: ' + place.price_level + '<br>' + 'rating: ' + place.rating);
+							infowindow.setContent(place.name + '<br>' + travelTime + '<br>' + 'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating);
 						});
 						infowindow.open(map, this);
 					});
@@ -150,6 +155,7 @@ function getTime(clicked, callback) {
 	});
 }
 
-getYelp('mexican', 'austin, tx', function(error, data) {
-	console.log(data.businesses[0].image_url);
-}); 
+getYelp(search, location, function(error, data) {
+	return (data.businesses[0].image_url);
+});
+
