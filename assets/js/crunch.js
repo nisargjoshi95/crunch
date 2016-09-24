@@ -75,7 +75,7 @@ $(document).ready(function() {
 								// Take the first 2 digits of the time string, parse to integer, and double it to get round-trip minutes
 								var totalTime = 2 * parseInt(time.substr(0,2));
 								if (totalTime < maxTime) {
-									if (results[i].rating > 2.5 && results[i].price_level == price) {
+									if (results[i].rating > 2.5 && price <= results[i].price_level) {
 										// create our marker and get the yelp image
 										var img;
 										getYelp(results[i].name, results[i].vicinity, function(error, data) {
@@ -120,32 +120,6 @@ $(document).ready(function() {
 	//marker
 	$('#search').on('click',function(){
 		codeAddress();
-
-		//distance matrix
-		var startPoint = $('#currentLoc').val().trim();
-		var origins = [startPoint];
-		//get restaurant coordinates from yelp callback 'endpoint'
-
-		var endPoint;
-		var destinations;
-		var travel = $('#travel').val().trim().toUpperCase();
-
-
-		var distanceMatrix  = new google.maps.DistanceMatrixService();
-		var distanceRequest = { origins: origins, destinations: destinations, travelMode: google.maps.TravelMode[travel], unitSystem: google.maps.UnitSystem.IMPERIAL, avoidHighways: false, avoidTolls: false };
-
-		distanceMatrix.getDistanceMatrix(distanceRequest, function(response, status) {
-			if (status != google.maps.DistanceMatrixStatus.OK) {
-				alert('Error was: ' + status);
-			}
-			else {
-				var origins      = response.originAddresses;
-				var destinations = response.destinationAddresses;
-				console.log(response);
-				console.log('Distance: '+ response.rows[0].elements[0].distance.text);
-				console.log('Duration: '+response.rows[0].elements[0].duration.text);
-			}
-		});
 	});
 });
 
