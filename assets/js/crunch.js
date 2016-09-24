@@ -1,8 +1,9 @@
+var map, geocoder, infowindow, time, radius, zoom, price, duration, distance, marker;
+
 $(document).ready(function() {
 	$('select').material_select();
 
 	//initial map
-	var map, geocoder, infowindow, time, radius, zoom, price, duration, distance;
 	function myMap() {
 		var mapCanvas = document.getElementById("map");
 		var mapOptions = {
@@ -97,6 +98,38 @@ $(document).ready(function() {
 
 	//marker
 	$('#search').on('click',function(){
+		// Throw red borders if user does not make a selection
+		if ($('#foodCategory').val() === '') {
+			$('#foodDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#foodDiv').css('border', 'none');
+		} 
+		if ($('#currentLoc').val() === '') {
+			$('#locationDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#locationDiv').css('border', 'none');
+		}
+		if ($('#time').val() === null) {
+			$('#timeDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#timeDiv').css('border', 'none');
+		}
+		if ($('#travel').val() === null) {
+			$('#travelDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#travelDiv').css('border', 'none');
+		}
+		if ($('#price').val() === null) {
+			$('#priceDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#priceDiv').css('border', 'none');	
+		}
+
 		codeAddress();
 	});
 });
@@ -131,13 +164,9 @@ function getTime(place, callback) {
 }
 
 function createMarker(place) {
-	var photos = place.photos;
-	if (!photos) {
-		return;
-	}
-	var icon = photos[0].getUrl({'maxWidth': 50, 'maxHeight': 50})
+
 	var placeLoc = place.geometry.location;
-	var marker = new google.maps.Marker({
+	marker = new google.maps.Marker({
 		map: map,
 		position: place.geometry.location
 	});
@@ -152,3 +181,7 @@ function createMarker(place) {
 	});
 }
 
+function clearMarkers() {
+	setMapOnAll(null);
+	marker = [];
+}

@@ -20,15 +20,15 @@
   <div class="row">
     <div class="col s4 indigo lighten-2 sidebar">
       <h5 class="center-align">On a crunch?</h5>
-      <div class="input-field col s12">
+      <div class="input-field col s12" id="locationDiv">
         <input id="currentLoc" type="text" class="validate">
         <label for="currentLoc">I'm at...</label>
       </div>
-      <div class="input-field col s12">
+      <div class="input-field col s12" id="foodDiv">
         <input id="foodCategory" type="text" class="validate">
         <label for="foodCategory">I want...</label>
       </div>
-      <div class="input-field col s12">
+      <div class="input-field col s12" id="timeDiv">
         <select id="time">
           <option value="" disabled selected>I have...</option>
           <option value="15">30 min</option>
@@ -38,7 +38,7 @@
           <option value="75">No Rush</option>
         </select>
       </div>
-      <div class="input-field col s12">
+      <div class="input-field col s12" id="travelDiv">
         <select id='travel'>
           <option value="" disabled selected>I'll be...</option>
           <option value="Walking">Walking</option>
@@ -47,7 +47,7 @@
           <option value="Transit">Transit</option>
         </select>
       </div>
-      <div class="input-field col s12">
+      <div class="input-field col s12" id="priceDiv">
       <select id='price'>
           <option value="" disabled selected>I'll spend...</option>
           <option value="1">under $10</option>
@@ -56,8 +56,9 @@
           <option value="4">$30 or more</option>
         </select>
       </div>
-      <div class="input-field col s12">
+      <div class="input-field col s12" id="searchButton">
         <a class="waves-effect waves-light btn-large deep-purple" id='search'><i class="material-icons left">search</i>Find places!</a>
+        <div id="incomplete">Incomplete Input</div>
       </div>
     </div>
     <div class="col s8 grey main-content">
