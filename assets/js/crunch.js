@@ -59,13 +59,27 @@ $(document).ready(function() {
 
 				function callback(results, status) {
 					if (status === google.maps.places.PlacesServiceStatus.OK) {
-						for (var i = 0; i < results.length; i++) {
-							var img;
-							getYelp(results[i].name, results[i].vicinity, function(error, data) {
-								img = (data.businesses[0].image_url);
-								console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
+						// TO DO: sort results based on distance
+
+						// Here we splice out results that are too far based on user input and traffic
+						var maxTime = parseInt($('#time').val());
+						for (let i = 0; i < results.length; i++) {
+							getTime(results[i], function(error, time) {
+								if (error) return;
+								// Take the first 2 digits of the time string, parse to integer, and double it to get round-trip minutes
+								var totalTime = 2 * parseInt(time.substr(0,2));
+								if (totalTime < maxTime) {
+									// create our marker and get the yelp image
+									var img;
+									getYelp(results[i].name, results[i].vicinity, function(error, data) {
+										if (error) return;
+										if (data.businesses.length == 0) return;
+										img = (data.businesses[0].image_url);
+										console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
+									});
+									createMarker(results[i]);
+								}
 							});
-							createMarker(results[i]);
 						}
 					}
 				}
@@ -83,6 +97,7 @@ $(document).ready(function() {
 					});
 
 					google.maps.event.addListener(marker, 'click', function() {
+						// Here we get the travel time
 						getTime(place, function (error, travelTime) {
 							if (error) console.log('got an error', error);
 							infowindow.setContent(place.name + '<br>' + travelTime + '<br>' + 'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating);
@@ -126,10 +141,10 @@ $(document).ready(function() {
 	});
 });
 
-function getTime(clicked, callback) {
+function getTime(place, callback) {
 
 	var start = $('#currentLoc').val().trim();
-	var end = clicked.geometry.location;
+	var end = place.geometry.location;
 	var travel = $('#travel').val().trim().toUpperCase();
 
 	var request = {
@@ -154,8 +169,4 @@ function getTime(clicked, callback) {
 	}
 	});
 }
-
-getYelp(search, location, function(error, data) {
-	return (data.businesses[0].image_url);
-});
 
