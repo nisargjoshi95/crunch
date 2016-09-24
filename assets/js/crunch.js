@@ -120,32 +120,6 @@ $(document).ready(function() {
 	//marker
 	$('#search').on('click',function(){
 		codeAddress();
-
-		//distance matrix
-		var startPoint = $('#currentLoc').val().trim();
-		var origins = [startPoint];
-		//get restaurant coordinates from yelp callback 'endpoint'
-
-		var endPoint;
-		var destinations;
-		var travel = $('#travel').val().trim().toUpperCase();
-
-
-		var distanceMatrix  = new google.maps.DistanceMatrixService();
-		var distanceRequest = { origins: origins, destinations: destinations, travelMode: google.maps.TravelMode[travel], unitSystem: google.maps.UnitSystem.IMPERIAL, avoidHighways: false, avoidTolls: false };
-
-		distanceMatrix.getDistanceMatrix(distanceRequest, function(response, status) {
-			if (status != google.maps.DistanceMatrixStatus.OK) {
-				alert('Error was: ' + status);
-			}
-			else {
-				var origins      = response.originAddresses;
-				var destinations = response.destinationAddresses;
-				console.log(response);
-				console.log('Distance: '+ response.rows[0].elements[0].distance.text);
-				console.log('Duration: '+response.rows[0].elements[0].duration.text);
-			}
-		});
 	});
 });
 
