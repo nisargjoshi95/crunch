@@ -91,28 +91,6 @@ $(document).ready(function() {
 						}
 					}
 				}
-
-				function createMarker(place) {
-					var photos = place.photos;
-					if (!photos) {
-						return;
-					}
-					var icon = photos[0].getUrl({'maxWidth': 50, 'maxHeight': 50})
-					var placeLoc = place.geometry.location;
-					var marker = new google.maps.Marker({
-						map: map,
-						position: place.geometry.location
-					});
-
-					google.maps.event.addListener(marker, 'click', function() {
-						// Here we get the travel time
-						getTime(place, function (error, travelTime) {
-							if (error) console.log('got an error', error);
-							infowindow.setContent(place.name + '<br>' + travelTime + '<br>' + 'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating);
-						});
-						infowindow.open(map, this);
-					});
-				}
 			}
 		})
 	};
@@ -149,6 +127,28 @@ function getTime(place, callback) {
 	} else {
 		callback('Status not okay.');
 	}
+	});
+}
+
+function createMarker(place) {
+	var photos = place.photos;
+	if (!photos) {
+		return;
+	}
+	var icon = photos[0].getUrl({'maxWidth': 50, 'maxHeight': 50})
+	var placeLoc = place.geometry.location;
+	var marker = new google.maps.Marker({
+		map: map,
+		position: place.geometry.location
+	});
+
+	google.maps.event.addListener(marker, 'click', function() {
+		// Here we get the travel time
+		getTime(place, function (error, travelTime) {
+			if (error) console.log('got an error', error);
+			infowindow.setContent(place.name + '<br>' + travelTime + '<br>' + 'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating);
+		});
+		infowindow.open(map, this);
 	});
 }
 
