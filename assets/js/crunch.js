@@ -2,9 +2,7 @@ $(document).ready(function() {
 	$('select').material_select();
 
 	//initial map
-	var map;
-	var geocoder;
-	var infowindow;
+	var map, geocoder, infowindow, time, radius, zoom, price, duration, distance;
 	function myMap() {
 		var mapCanvas = document.getElementById("map");
 		var mapOptions = {
@@ -35,16 +33,24 @@ $(document).ready(function() {
 	// on click, mark startpoint with a marker and recenter to currentLoc
 
 	function codeAddress() {
+		time = parseInt($('#time').val());
+		radius = time/15*800;
+		zoom = 16-time/15;
+		price = parseInt($('#price').val());
 		geocoder = new google.maps.Geocoder();
 		var address = $('#currentLoc').val().trim();
 		geocoder.geocode({'address':address},function(results, status){
 			if (status =='OK') {  
+				var img = {
+					url : 'http://icons.iconarchive.com/icons/david-renelt/little-icon-people/32/Women-icon.png',
+					scaledSize : new google.maps.Size(35, 35)
+				};
 				var marker = new google.maps.Marker({position:results[0].geometry.location,
 					animation:google.maps.Animation.DROP,
-					icon:'http://icons.iconarchive.com/icons/david-renelt/little-icon-people/32/Women-icon.png'});
+					icon: img});
 				marker.setMap(map);
 				map.setCenter(results[0].geometry.location);  
-				map.setZoom(16);
+				map.setZoom(zoom);
 				map.center = results[0].geometry.location;
 				//search nearby restaurants by key terms and set markers and infowindows
 				var keyTerm = $('#foodCategory').val().trim();
@@ -52,7 +58,7 @@ $(document).ready(function() {
 				var service = new google.maps.places.PlacesService(map);
 				service.nearbySearch({
 					location: map.center,
-					radius: 20000,
+					radius: radius,
 					type: ['restaurant'],
 					name: keyTerm
 					}, callback);
@@ -69,15 +75,17 @@ $(document).ready(function() {
 								// Take the first 2 digits of the time string, parse to integer, and double it to get round-trip minutes
 								var totalTime = 2 * parseInt(time.substr(0,2));
 								if (totalTime < maxTime) {
-									// create our marker and get the yelp image
-									var img;
-									getYelp(results[i].name, results[i].vicinity, function(error, data) {
-										if (error) return;
-										if (data.businesses.length == 0) return;
-										img = (data.businesses[0].image_url);
-										console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
-									});
-									createMarker(results[i]);
+									if (results[i].rating > 2.5 && results[i].price_level == price) {
+										// create our marker and get the yelp image
+										var img;
+										getYelp(results[i].name, results[i].vicinity, function(error, data) {
+											if (error) return;
+											if (data.businesses.length == 0) return;
+											img = (data.businesses[0].image_url);
+											console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
+										});
+										createMarker(results[i]);
+									}
 								}
 							});
 						}
