@@ -149,3 +149,7 @@ function getTime(clicked, callback) {
 	}
 	});
 }
+
+getYelp('mexican', 'austin, tx', function(error, data) {
+	console.log(data.businesses[0].image_url);
+}); 
