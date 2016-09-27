@@ -70,10 +70,13 @@ $(document).ready(function() {
 						for (let i = 0; i < results.length; i++) {
 							getTime(results[i], function(error, time) {
 								if (error) return;
+								var foundPlaces = false;
 								// Take the first 2 digits of the time string, parse to integer, and double it to get round-trip minutes
 								var totalTime = 2 * parseInt(time.substr(0,2));
 								if (totalTime < maxTime) {
 									if ((results[i].rating > 2.5 && (parseInt(results[i].price_level) <= price) || results[i].price_level === undefined))  {
+										console.log(results[i]); // CHANGE THIS
+										foundPlaces = true;
 										// create our marker and get the yelp image
 										var img;
 										getYelp(results[i].name, results[i].vicinity, function(error, data) {
@@ -87,6 +90,11 @@ $(document).ready(function() {
 								}
 							});
 						}
+						if (!foundPlaces) {
+									noResults();
+						}
+					} else {
+						noResults();
 					}
 				}
 			}
@@ -188,4 +196,12 @@ function createMarker(place) {
 function clearMarkers() {
 	setMapOnAll(null);
 	marker = [];
+}
+
+function noResults() {
+	var content = 'no results found';
+	var infowindow = new google.maps.InfoWindow({
+      content: content
+  	});
+  	infowindow.open(map, marker);
 }
