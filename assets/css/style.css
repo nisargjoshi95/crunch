@@ -23,7 +23,7 @@ html, body, .row, .sidebar, .main-content, #map {
 }
 
 .nav-wrapper {
-  padding-left: 8px;
+  padding-left: 16px;
 }
 
 #incomplete {
