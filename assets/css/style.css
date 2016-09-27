@@ -1,5 +1,9 @@
-html, body, .row, .sidebar, .main-content, #map {
+html, body, .row, .sidebar, .row .col.s8.main-content {
   height: 100%;
+}
+
+.row .col.s8.main-content {
+  padding: 0;
 }
 
 /* label color */

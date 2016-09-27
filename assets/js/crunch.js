@@ -4,15 +4,12 @@ $(document).ready(function() {
 	$('select').material_select();
 
 	//initial map
-	function myMap() {
-		var mapCanvas = document.getElementById("map");
-		var mapOptions = {
-			center: new google.maps.LatLng(30.2669444,-97.7427778),
-			zoom: 12
-		};
-		map = new google.maps.Map(mapCanvas, mapOptions);
-	}
-	myMap();
+	var mapCanvas = document.getElementById("map");
+	var mapOptions = {
+		center: new google.maps.LatLng(30.2669444,-97.7427778),
+		zoom: 12
+	};
+	map = new google.maps.Map(mapCanvas, mapOptions);
 
 	//autocomplete for currentLoc
 	var defaultBounds = new google.maps.LatLngBounds(
@@ -41,7 +38,7 @@ $(document).ready(function() {
 		geocoder = new google.maps.Geocoder();
 		var address = $('#currentLoc').val().trim();
 		geocoder.geocode({'address':address},function(results, status){
-			if (status =='OK') {  
+			if (status =='OK') {
 				var img = {
 					url : 'http://icons.iconarchive.com/icons/david-renelt/little-icon-people/32/Women-icon.png',
 					scaledSize : new google.maps.Size(35, 35)
@@ -50,7 +47,7 @@ $(document).ready(function() {
 					animation:google.maps.Animation.DROP,
 					icon: img});
 				marker.setMap(map);
-				map.setCenter(results[0].geometry.location);  
+				map.setCenter(results[0].geometry.location);
 				map.setZoom(zoom);
 				map.center = results[0].geometry.location;
 				//search nearby restaurants by key terms and set markers and infowindows
@@ -105,7 +102,7 @@ $(document).ready(function() {
 			incomplete = true;
 		} else {
 			$('#foodDiv').css('border', 'none');
-		} 
+		}
 		if ($('#currentLoc').val() === '') {
 			$('#locationDiv').css('border', 'solid red 2px');
 			incomplete = true;
@@ -128,9 +125,9 @@ $(document).ready(function() {
 			$('#priceDiv').css('border', 'solid red 2px');
 			incomplete = true;
 		} else {
-			$('#priceDiv').css('border', 'none');	
+			$('#priceDiv').css('border', 'none');
 		}
-		
+
 		if (incomplete) {
 			$('#incomplete').show();
 		} else {
