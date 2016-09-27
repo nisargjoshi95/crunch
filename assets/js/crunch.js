@@ -4,32 +4,38 @@ var filter = false;
 $(document).ready(function() {
 	$('select').material_select();
 
-	//initial map
+	//initial map and geolocation
 	var infoWindow = new google.maps.InfoWindow({map: map});
-         if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
+		 if (navigator.geolocation) {
+	    navigator.geolocation.getCurrentPosition(function(position) {
+	      var pos = {
+	        lat: position.coords.latitude,
+	        lng: position.coords.longitude
+	      };
 
-          infoWindow.setPosition(pos);
-          infoWindow.setContent('Location found.');
-          map.setCenter(pos);
-        }, function() {
-          handleLocationError(true, infoWindow, map.getCenter());
-        });
-      } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
-      }
-    
-    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-      infoWindow.setPosition(pos);
-      infoWindow.setContent(browserHasGeolocation ?
-                            'Error: The Geolocation service failed.' :
-                            'Error: Your browser doesn\'t support geolocation.');
-    }
+	      infoWindow.setPosition(pos);
+	      infoWindow.setContent('Location found.');
+	      setTimeout(function(){infoWindow.close();},3000);
+	      map.setCenter(pos);
+	      //get location
+	      console.log(pos.lat+","+pos.lng);
+	      $('#currentLoc').val(pos.lat+","+pos.lng);
+	      
+	    }, function() {
+	      handleLocationError(true, infoWindow, map.getCenter());
+	    });
+	  } else {
+	    // Browser doesn't support Geolocation
+	    handleLocationError(false, infoWindow, map.getCenter());
+	  }
+	
+	function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+	  infoWindow.setPosition(pos);
+	  infoWindow.setContent(browserHasGeolocation ?
+	                        'Error: The Geolocation service failed. Please enter your address manually' :
+	                        'Error: Your browser doesn\'t support geolocation.Please enter your address manually');
+	  setTimeout(function(){infoWindow.close();},3000);
+	}
     
 	var mapCanvas = document.getElementById("map");
 	var mapOptions = {
