@@ -1,4 +1,5 @@
 var map, geocoder, infowindow, time, radius, zoom, price, duration, distance, marker;
+var filter = false;
 
 $(document).ready(function() {
 	$('select').material_select();
@@ -80,12 +81,22 @@ $(document).ready(function() {
 										// create our marker and get the yelp image
 										var img;
 										getYelp(results[i].name, results[i].vicinity, function(error, data) {
+											var keywords = data.businesses[0].categories;
+											for (var i = 0; i < keywords.length; i++) {
+												if (filter) {
+													if (keywords[i][1] == 'vegetarian' ) { // MAKE THIS A VARIABLE
+														console.log('vegetarian!'); // CREATE MARKER
+													}
+												}
+											}
 											if (error) return;
 											if (data.businesses.length == 0) return;
 											img = (data.businesses[0].image_url);
 											console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
 										});
-										createMarker(results[i]);
+										if (!filter) {
+											createMarker(results[i]);
+										}
 									}
 								}
 							});
