@@ -99,35 +99,42 @@ $(document).ready(function() {
 	//marker
 	$('#search').on('click',function(){
 		// Throw red borders if user does not make a selection
+		var incomplete = false;
 		if ($('#foodCategory').val() === '') {
 			$('#foodDiv').css('border', 'solid red 2px');
-			$('#incomplete').show();
+			incomplete = true;
 		} else {
 			$('#foodDiv').css('border', 'none');
 		} 
 		if ($('#currentLoc').val() === '') {
 			$('#locationDiv').css('border', 'solid red 2px');
-			$('#incomplete').show();
+			incomplete = true;
 		} else {
 			$('#locationDiv').css('border', 'none');
 		}
 		if ($('#time').val() === null) {
 			$('#timeDiv').css('border', 'solid red 2px');
-			$('#incomplete').show();
+			incomplete = true;
 		} else {
 			$('#timeDiv').css('border', 'none');
 		}
 		if ($('#travel').val() === null) {
 			$('#travelDiv').css('border', 'solid red 2px');
-			$('#incomplete').show();
+			incomplete = true;
 		} else {
 			$('#travelDiv').css('border', 'none');
 		}
 		if ($('#price').val() === null) {
 			$('#priceDiv').css('border', 'solid red 2px');
-			$('#incomplete').show();
+			incomplete = true;
 		} else {
 			$('#priceDiv').css('border', 'none');	
+		}
+		
+		if (incomplete) {
+			$('#incomplete').show();
+		} else {
+			$('#incomplete').css('display', 'none');
 		}
 
 		codeAddress();
