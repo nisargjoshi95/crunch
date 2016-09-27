@@ -25,6 +25,10 @@ $(document).ready(function() {
 	      infoWindow.setPosition(pos);
 	      infoWindow.setContent('Location found.');
 	      map.setCenter(pos);
+	      //get location
+	      console.log(pos.lat+","+pos.lng);
+	      $('#currentLoc').val(pos.lat+","+pos.lng);
+	      
 	    }, function() {
 	      handleLocationError(true, infoWindow, map.getCenter());
 	    });
@@ -36,8 +40,8 @@ $(document).ready(function() {
 	function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 	  infoWindow.setPosition(pos);
 	  infoWindow.setContent(browserHasGeolocation ?
-	                        'Error: The Geolocation service failed.' :
-	                        'Error: Your browser doesn\'t support geolocation.');
+	                        'Error: The Geolocation service failed. Please enter your address manually' :
+	                        'Error: Your browser doesn\'t support geolocation.Please enter your address manually');
 	}
 
 	//autocomplete for currentLoc
