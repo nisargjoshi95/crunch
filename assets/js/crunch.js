@@ -1,8 +1,9 @@
+var map, geocoder, infowindow, time, radius, zoom, price, duration, distance, marker;
+
 $(document).ready(function() {
 	$('select').material_select();
 
 	//initial map
-	var map, geocoder, infowindow, time, radius, zoom, price, duration, distance;
 	function myMap() {
 		var mapCanvas = document.getElementById("map");
 		var mapOptions = {
@@ -12,6 +13,32 @@ $(document).ready(function() {
 		map = new google.maps.Map(mapCanvas, mapOptions);
 	}
 	myMap();
+	//geolocation
+	  var infoWindow = new google.maps.InfoWindow({map: map});
+		 if (navigator.geolocation) {
+	    navigator.geolocation.getCurrentPosition(function(position) {
+	      var pos = {
+	        lat: position.coords.latitude,
+	        lng: position.coords.longitude
+	      };
+
+	      infoWindow.setPosition(pos);
+	      infoWindow.setContent('Location found.');
+	      map.setCenter(pos);
+	    }, function() {
+	      handleLocationError(true, infoWindow, map.getCenter());
+	    });
+	  } else {
+	    // Browser doesn't support Geolocation
+	    handleLocationError(false, infoWindow, map.getCenter());
+	  }
+	
+	function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+	  infoWindow.setPosition(pos);
+	  infoWindow.setContent(browserHasGeolocation ?
+	                        'Error: The Geolocation service failed.' :
+	                        'Error: Your browser doesn\'t support geolocation.');
+	}
 
 	//autocomplete for currentLoc
 	var defaultBounds = new google.maps.LatLngBounds(
@@ -66,7 +93,6 @@ $(document).ready(function() {
 				function callback(results, status) {
 					if (status === google.maps.places.PlacesServiceStatus.OK) {
 						// TO DO: sort results based on distance
-
 						// Here we splice out results that are too far based on user input and traffic
 						var maxTime = parseInt($('#time').val());
 						for (let i = 0; i < results.length; i++) {
@@ -86,9 +112,17 @@ $(document).ready(function() {
 										});
 										createMarker(results[i]);
 									}
+								} else {
+									console.log('too shitty/expensive/far');
 								}
 							});
 						}
+					} else {
+						console.log('no results');
+						 var infowindow = new google.maps.InfoWindow({
+							    content: 'no results'
+							  });
+						  infowindow.open(map, marker);
 					}
 				}
 			}
@@ -97,6 +131,38 @@ $(document).ready(function() {
 
 	//marker
 	$('#search').on('click',function(){
+		// Throw red borders if user does not make a selection
+		if ($('#foodCategory').val() === '') {
+			$('#foodDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#foodDiv').css('border', 'none');
+		} 
+		if ($('#currentLoc').val() === '') {
+			$('#locationDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#locationDiv').css('border', 'none');
+		}
+		if ($('#time').val() === null) {
+			$('#timeDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#timeDiv').css('border', 'none');
+		}
+		if ($('#travel').val() === null) {
+			$('#travelDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#travelDiv').css('border', 'none');
+		}
+		if ($('#price').val() === null) {
+			$('#priceDiv').css('border', 'solid red 2px');
+			$('#incomplete').show();
+		} else {
+			$('#priceDiv').css('border', 'none');	
+		}
+
 		codeAddress();
 	});
 });
@@ -131,13 +197,9 @@ function getTime(place, callback) {
 }
 
 function createMarker(place) {
-	var photos = place.photos;
-	if (!photos) {
-		return;
-	}
-	var icon = photos[0].getUrl({'maxWidth': 50, 'maxHeight': 50})
+
 	var placeLoc = place.geometry.location;
-	var marker = new google.maps.Marker({
+	marker = new google.maps.Marker({
 		map: map,
 		position: place.geometry.location
 	});
@@ -152,3 +214,7 @@ function createMarker(place) {
 	});
 }
 
+function clearMarkers() {
+	setMapOnAll(null);
+	marker = [];
+}

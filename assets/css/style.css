@@ -25,3 +25,17 @@ html, body, .row, .sidebar, .main-content, #map {
 .nav-wrapper {
   padding-left: 8px;
 }
+
+#incomplete {
+	display: none;
+	width: 450px;
+	padding-left: 210px;
+	color: red;
+	height: 25px;
+	margin-top: -25px;
+}
+
+#searchButton {
+	width: 450px;
+	height: 65px;
+}
