@@ -24,6 +24,7 @@ $(document).ready(function() {
 
 	      infoWindow.setPosition(pos);
 	      infoWindow.setContent('Location found.');
+	      setTimeout(function(){infoWindow.close();},3000);
 	      map.setCenter(pos);
 	      //get location
 	      console.log(pos.lat+","+pos.lng);
@@ -42,6 +43,7 @@ $(document).ready(function() {
 	  infoWindow.setContent(browserHasGeolocation ?
 	                        'Error: The Geolocation service failed. Please enter your address manually' :
 	                        'Error: Your browser doesn\'t support geolocation.Please enter your address manually');
+	  setTimeout(function(){infoWindow.close();},3000);
 	}
 
 	//autocomplete for currentLoc
