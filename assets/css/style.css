@@ -43,3 +43,8 @@ html, body, .row, .sidebar, .row .col.s8.main-content {
 	width: 450px;
 	height: 65px;
 }
+
+#instructions{
+	float:left;
+	width:800px;
+}
