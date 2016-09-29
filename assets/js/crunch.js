@@ -40,7 +40,8 @@ $(document).ready(function() {
 	var mapCanvas = document.getElementById("map");
 	var mapOptions = {
 		center: new google.maps.LatLng(30.2669444,-97.7427778),
-		zoom: 12
+		zoom: 12,
+		el: '#map',
 	};
 	map = new google.maps.Map(mapCanvas, mapOptions);
 
@@ -187,6 +188,30 @@ $(document).ready(function() {
 
 		codeAddress();
 	});
+//animate Route
+ $(document.body).on('click','#select',function(){
+ 	 map = new GMaps({
+        el: '#map',
+        lat: map.getCenter().lat(),
+        lng:  map.getCenter().lng()
+      });
+ 	 console.log(map);
+		map.travelRoute({
+		  origin: [map.getCenter().lat(),map.getCenter().lng()],
+		  destination: [marker.position.lat(),marker.position.lng()],
+		  travelMode: 'driving',
+		  step: function(e) {
+		    $('#instructions').append('<li>'+e.instructions+'</li>');
+		    $('#instructions li:eq(' + e.step_number + ')').delay(450 * e.step_number).fadeIn(200, function() {
+		      map.drawPolyline({
+		        path: e.path,
+		        strokeColor: '#131540',
+		        strokeOpacity: 0.6,
+		        strokeWeight: 6
+		      });
+		    });
+		  }
+		});
 });
 
 function getTime(place, callback) {
@@ -230,7 +255,9 @@ function createMarker(place) {
 		// Here we get the travel time
 		getTime(place, function (error, travelTime) {
 			if (error) console.log('got an error', error);
-			infowindow.setContent(place.name + '<br>' + travelTime + '<br>' + 'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating);
+			infowindow.setContent(place.name + '<br>' + travelTime + '<br>' + 
+				'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating+'<br>'+
+				'<button id="select">' +'This is what I want'+'</button>');
 		});
 		infowindow.open(map, this);
 	});
@@ -248,3 +275,7 @@ function noResults() {
   	});
   	infowindow.open(map, marker);
 }
+
+
+
+});
