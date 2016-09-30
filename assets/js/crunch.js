@@ -106,34 +106,29 @@ $(document).ready(function() {
 		// Throw red borders if user does not make a selection
 		var incomplete = false;
 		if ($('#foodCategory').val() === '') {
-			$('#foodDiv').css('border', 'solid red 2px');
+			$('#foodCategory').focus();
+			$('label[for=foodCategory]').css({color:'red'});
 			incomplete = true;
-		} else {
-			$('#foodDiv').css('border', 'none');
 		}
 		if ($('#currentLoc').val() === '') {
-			$('#locationDiv').css('border', 'solid red 2px');
+			$('#currentLoc').focus();
+			$('label[for=currentLoc]').css({color:'red'});
 			incomplete = true;
-		} else {
-			$('#locationDiv').css('border', 'none');
 		}
 		if ($('#time').val() === null) {
-			$('#timeDiv').css('border', 'solid red 2px');
+			$('#time').focus();
+			$('#timeDiv .select-dropdown').css({color:'red'});
 			incomplete = true;
-		} else {
-			$('#timeDiv').css('border', 'none');
 		}
 		if ($('#travel').val() === null) {
-			$('#travelDiv').css('border', 'solid red 2px');
+			$("#travel").focus();
+			$("#travelDiv .select-dropdown").css({color:"red"});
 			incomplete = true;
-		} else {
-			$('#travelDiv').css('border', 'none');
 		}
 		if ($('#price').val() === null) {
-			$('#priceDiv').css('border', 'solid red 2px');
+			$("#price").focus();
+			$("#priceDiv .select-dropdown").css({color:"red"});
 			incomplete = true;
-		} else {
-			$('#priceDiv').css('border', 'none');
 		}
 
 		if (incomplete) {
@@ -205,3 +200,9 @@ function noResults() {
   	});
   	infowindow.open(map, marker);
 }
+
+/*
+
+	ANIMATED ROUTES
+
+	*/
