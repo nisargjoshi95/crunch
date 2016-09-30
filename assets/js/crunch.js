@@ -5,6 +5,14 @@ $(document).ready(function() {
 	$('select').material_select();
 
 	//initial map and geolocation
+	var mapCanvas = document.getElementById("map");
+	var mapOptions = {
+		center: new google.maps.LatLng(30.2669444,-97.7427778),
+		zoom: 12,
+		el: '#map',
+	};
+	map = new google.maps.Map(mapCanvas, mapOptions);
+
 	var infoWindow = new google.maps.InfoWindow({map: map});
 		 if (navigator.geolocation) {
 	    navigator.geolocation.getCurrentPosition(function(position) {
@@ -37,14 +45,7 @@ $(document).ready(function() {
 	  setTimeout(function(){infoWindow.close();},3000);
 	}
     
-	var mapCanvas = document.getElementById("map");
-	var mapOptions = {
-		center: new google.maps.LatLng(30.2669444,-97.7427778),
-		zoom: 12,
-		el: '#map',
-	};
-	map = new google.maps.Map(mapCanvas, mapOptions);
-
+	
 	//autocomplete for currentLoc
 	var defaultBounds = new google.maps.LatLngBounds(
 		new google.maps.LatLng(30.136290,-97.945014),
