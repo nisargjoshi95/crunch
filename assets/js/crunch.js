@@ -1,5 +1,4 @@
-var map, geocoder, infowindow, time, radius, zoom, price, duration, distance, marker, lat, lng;
-var filter = false;
+var map, geocoder, infowindow, time, radius, zoom, price, marker, lat, lng;
 
 $(document).ready(function() {
     $('select').material_select();
@@ -282,6 +281,21 @@ $(document).ready(function() {
         infowindow.open(map, marker);
     }
 
-
-
 });
+
+function resetVariables() {
+	map = new google.maps.Map(mapCanvas, mapOptions);
+	geocoder = new google.maps.Geocoder();
+	infoWindow = new google.maps.InfoWindow({ map: map });
+	time = parseInt($('#time').val());
+	radius = time / 15 * 800;
+	zoom = 16 - time / 15;
+	price = 0;
+    var marker = new google.maps.Marker({
+    position: results[0].geometry.location,
+    animation: google.maps.Animation.DROP,
+    icon: img
+	});
+	lat = 0;
+	long = 0;
+}
