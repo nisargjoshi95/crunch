@@ -193,7 +193,8 @@ $(document).ready(function() {
  	 map = new GMaps({
         el: '#map',
         lat: map.getCenter().lat(),
-        lng:  map.getCenter().lng()
+        lng:  map.getCenter().lng(),
+        zoom: 15
       });
  	 console.log(map);
 		map.travelRoute({
