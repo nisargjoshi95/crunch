@@ -195,7 +195,7 @@ $(document).ready(function() {
         el: '#map',
         lat: map.getCenter().lat(),
         lng:  map.getCenter().lng(),
-        zoom: 15
+        zoom: 14
       });
  	 console.log(map);
 		map.travelRoute({
