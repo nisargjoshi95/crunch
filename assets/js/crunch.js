@@ -1,4 +1,4 @@
-var map, geocoder, infowindow, time, radius, zoom, price, duration, distance, marker;
+var map, geocoder, infowindow, time, radius, zoom, price, duration, distance, marker, lat, lng;
 var filter = false;
 
 $(document).ready(function() {
@@ -200,7 +200,7 @@ $(document).ready(function() {
  	 console.log(map);
 		map.travelRoute({
 		  origin: [map.getCenter().lat(),map.getCenter().lng()],
-		  destination: [marker.position.lat(),marker.position.lng()],
+		  destination: [lat,lng],
 		  travelMode: 'driving',
 		  step: function(e) {
 		    $('#instructions').append('<li>'+e.instructions+'</li>');
@@ -262,6 +262,8 @@ function createMarker(place) {
 				'<button id="select">' +'This is what I want'+'</button>');
 		});
 		infowindow.open(map, this);
+		lat = place.geometry.location.lat();
+		lng = place.geometry.location.lng();
 	});
 }
 
