@@ -1,5 +1,4 @@
-html, body, .row, .s
-idebar, .row .col.s8.main-content {
+html, body, .row, .sidebar, .row .col.s8.main-content {
   height: 100%;
 }
 
@@ -31,6 +30,18 @@ idebar, .row .col.s8.main-content {
   padding-left: 16px;
 }
 
+span.stars, span.stars span {
+    display: block;
+    /*background: url(../img/stars.png) 0 -16px repeat-x;*/
+    width: 80px;
+    height: 16px;
+}
+
+span.stars span {
+    background: url(../img/stars.png) 0 0 repeat-x;
+    background-position: 0 0;
+}
+
 #incomplete {
 	display: none;
 	color: red;
@@ -58,7 +69,7 @@ idebar, .row .col.s8.main-content {
 	width: 100px;
 }
 
-#display {	
+#display {
 	float:left;
 	width:800px;
 }

@@ -70,53 +70,43 @@ $(document).ready(function() {
     codeAddress();
 
     //marker
-    $('#search').on('click', function() {
+	$('#search').on('click',function(){
+		// Throw red borders if user does not make a selection
+		var incomplete = false;
+		if ($('#foodCategory').val() === '') {
+			$('#foodCategory').focus();
+			$('label[for=foodCategory]').css({color:'red'});
+			incomplete = true;
+		}
+		if ($('#currentLoc').val() === '') {
+			$('#currentLoc').focus();
+			$('label[for=currentLoc]').css({color:'red'});
+			incomplete = true;
+		}
+		if ($('#time').val() === null) {
+			$('#time').focus();
+			$('#timeDiv .select-dropdown').css({color:'red'});
+			incomplete = true;
+		}
+		if ($('#travel').val() === null) {
+			$("#travel").focus();
+			$("#travelDiv .select-dropdown").css({color:"red"});
+			incomplete = true;
+		}
+		if ($('#price').val() === null) {
+			$("#price").focus();
+			$("#priceDiv .select-dropdown").css({color:"red"});
+			incomplete = true;
+		}
 
-        $('#restart').show();
-        $('#restart').css('display', 'inline-block');
-        $('select').material_select();
+		if (incomplete) {
+			$('#incomplete').show();
+		} else {
+			$('#incomplete').css('display', 'none');
+		}
 
-        // Throw red borders if user does not make a selection
-        var incomplete = false;
-        if ($('#foodCategory').val() === '') {
-            $('#foodDiv').css('border', 'solid red 2px');
-            incomplete = true;
-        } else {
-            $('#foodDiv').css('border', 'none');
-        }
-        if ($('#currentLoc').val() === '') {
-            $('#locationDiv').css('border', 'solid red 2px');
-            incomplete = true;
-        } else {
-            $('#locationDiv').css('border', 'none');
-        }
-        if ($('#time').val() === null) {
-            $('#timeDiv').css('border', 'solid red 2px');
-            incomplete = true;
-        } else {
-            $('#timeDiv').css('border', 'none');
-        }
-        if ($('#travel').val() === null) {
-            $('#travelDiv').css('border', 'solid red 2px');
-            incomplete = true;
-        } else {
-            $('#travelDiv').css('border', 'none');
-        }
-        if ($('#price').val() === null) {
-            $('#priceDiv').css('border', 'solid red 2px');
-            incomplete = true;
-        } else {
-            $('#priceDiv').css('border', 'none');
-        }
-
-        if (incomplete) {
-            $('#incomplete').show();
-        } else {
-            $('#incomplete').css('display', 'none');
-        }
-
-        codeAddress();
-    });
+		codeAddress();
+	});
 
     $('#restart').on('click', function() {
         resetVariables();
@@ -136,25 +126,40 @@ $(document).ready(function() {
             zoom: 14
         });
         console.log(map);
-        $('#display').append('You have chosen ' + restaurantName + '<br>' + 'The estimated on way travel time is ' + displayTime + '<br>' + 'Enjoy your meal!');
+        $('#display').append('You have chosen ' + restaurantName + '<br>' + 'The estimated travel time is ' + displayTime + '<br>' + 'Enjoy your meal!');
 
         $('#back').show();
         $('#back').css('display', 'inline-block');
         $('select').material_select();
+        var instructions = "";
         map.travelRoute({
             origin: [map.getCenter().lat(), map.getCenter().lng()],
             destination: [lat, lng],
             travelMode: 'driving',
+            start: function(e) {},
             step: function(e) {
-                $('#instructions').append('<li>' + e.instructions + '</li>');
-                $('#instructions li:eq(' + e.step_number + ')').delay(450 * e.step_number).fadeIn(200, function() {
+                //$('#main').append('<li>' + e.instructions + '</li>');
+                $('#main li:eq(' + e.step_number + ')').delay(450 * e.step_number).fadeIn(200, function() {
                     map.drawPolyline({
                         path: e.path,
                         strokeColor: '#598234',
                         strokeOpacity: 0.6,
                         strokeWeight: 6
                     });
+                    console.log("drawline");
                 });
+                console.log("drawline");
+                instructions += (e.step_number+1) + ") " + e.instructions + "<br>";
+            },
+            end: function(e) {
+              map.addMarker({
+                lat: lat,
+                lng: lng,
+                infoWindow: {
+                  content: "<p>" + instructions + "</p>"
+                }
+              });
+              setTimeout(map.markers[0].infoWindow.open(map, map.markers[0]), 450 * e.legs.steps.length);
             }
         });
     });
@@ -345,9 +350,13 @@ function createMarker(place, img) {
         getTime(place, function(error, travelTime) {
 
             if (error) console.log('got an error', error);
-            infowindow.setContent('<img border="0" src=' + img + ' style="width:200px;height:200px;">' + '<br> <b><center>' + place.name + '<br>' + travelTime + '<br>' +
-                'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating + '<br>' +
-                '</b><button id="select">' + 'This is what I want' + '</button> </center>');
+            infowindow.setContent(
+              '<img border="0" src=' + img + ' style="width:200px;height:200px;">' +
+              '<br><b><center>' + place.name + ' - ' + travelTime +
+              '<br>' + priceToDollar(place.price_level) +
+              '<br><span class="stars">' + place.rating + '</span>' +
+              '<br></b><button id="select">' + 'Show me how to get here!' + '</button> </center>');
+            $('span.stars').stars();
             displayTime = travelTime;
             restaurantName = place.name;
         });
@@ -368,4 +377,25 @@ function noResults() {
         content: content
     });
     infowindow.open(map, marker);
+}
+
+function priceToDollar(price) {
+  var format = "";
+  for (var i = 0; i < price; i++) {
+    format += "$";
+  }
+  return format;
+}
+
+$.fn.stars = function() {
+    return $(this).each(function() {
+        // Get the value
+        var val = parseFloat($(this).html());
+        // Make sure that the value is in 0 - 5 range, multiply to get width
+        var size = Math.max(0, (Math.min(5, val))) * 16;
+        // Create stars holder
+        var $span = $('<span />').width(size);
+        // Replace the numerical value with stars
+        $(this).html($span);
+    });
 }
