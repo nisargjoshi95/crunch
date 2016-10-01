@@ -73,7 +73,7 @@ $(document).ready(function() {
     $('#search').on('click', function() {
 
         $('#restart').show();
-        $('#information').empty();
+        $('#instructions').empty();
         $('#display').empty();
         var mapCanvas = document.getElementById("map");
         var mapOptions = {
