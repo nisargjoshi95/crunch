@@ -110,7 +110,7 @@ $(document).ready(function() {
                                 // Take the first 2 digits of the time string, parse to integer, and double it to get round-trip minutes
                                 var totalTime = 2 * parseInt(time.substr(0, 2));
                                 if (totalTime < maxTime) {
-                                    if ((results[i].rating > 2.5 && (parseInt(results[i].price_level) <= price) || results[i].price_level === undefined)) {
+                                    if ((results[i].rating > 2.5 && (parseInt(results[i].price_level) <= price) || results[i].price_level === 'undefined')) {
                                         console.log(results[i]); // CHANGE THIS
                                         foundPlaces = true;
                                         // create our marker and get the yelp image
