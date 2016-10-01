@@ -72,6 +72,7 @@ $(document).ready(function() {
     $('#search').on('click', function() {
 
         $('#restart').show();
+        $('#restart').css('display', 'inline-block');
         $('select').material_select();
 
         // Throw red borders if user does not make a selection
@@ -131,6 +132,7 @@ $(document).ready(function() {
         $('#display').append('You have chosen ' + restaurantName + '<br>' + 'The estimated on way travel time is ' + displayTime + '<br>' + 'Enjoy your meal!');
 
         $('#back').show();
+        $('#back').css('display', 'inline-block');
         $('select').material_select();
         map.travelRoute({
             origin: [map.getCenter().lat(), map.getCenter().lng()],

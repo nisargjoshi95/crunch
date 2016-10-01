@@ -47,17 +47,19 @@ idebar, .row .col.s8.main-content {
 
 #instructions{
 	float:left;
-	width:800px;
+	width: 800px;
 }
 
 #restart {
 	display: none;
-	width: 140px;
+	width: 120px;
+	text-align: center;
 }
 
 #back {
 	display: none;
-	width: 80px;
+	height: 54px;
+	width: 100px;
 }
 
 #display {	
