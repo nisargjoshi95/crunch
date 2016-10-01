@@ -66,7 +66,7 @@ $(document).ready(function() {
 
     function codeAddress() {
         time = parseInt($('#time').val());
-        radius = time / 15 * 800;
+        radius = time / 15 * 1000;
         zoom = 16 - time / 15;
         price = parseInt($('#price').val());
         geocoder = new google.maps.Geocoder();
