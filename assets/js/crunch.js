@@ -73,6 +73,15 @@ $(document).ready(function() {
     $('#search').on('click', function() {
 
         $('#restart').show();
+        $('#information').empty();
+        $('#display').empty();
+        var mapCanvas = document.getElementById("map");
+        var mapOptions = {
+            center: new google.maps.LatLng(30.2669444, -97.7427778),
+            zoom: 12,
+            el: '#map',
+        };
+        map = new google.maps.Map(mapCanvas, mapOptions);
         $('#restart').css('display', 'inline-block');
         $('select').material_select();
 
