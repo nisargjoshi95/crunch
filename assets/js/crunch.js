@@ -119,6 +119,12 @@ $(document).ready(function() {
 
     $('#restart').on('click', function() {
         resetVariables();
+        $('#travelDiv').css('border', 'none');
+        $('#timeDiv').css('border', 'none');
+        $('#locationDiv').css('border', 'none');
+        $('#priceDiv').css('border', 'none');
+        $('#foodDiv').css('border', 'none');
+        $('#incomplete').hide();
     });
     //animate Route
     $(document.body).on('click', '#select', function() {
