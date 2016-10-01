@@ -1,6 +1,7 @@
 var map, geocoder, infowindow, time, radius, zoom, price, marker, lat, lng, lat, lng, displayTime, restaurantName;
 var filter = false;
 var places = [];
+var images = [];
 
 $(document).ready(function() {
     $('select').material_select();
@@ -182,6 +183,7 @@ function resetVariables() {
     $('#display').html('');
     $('#instructions').html('');
     places = [];
+    images = [];
     $('select').material_select();
 }
 
@@ -198,7 +200,7 @@ $('#back').on('click', function() {
     $('#instructions').html('');
     //codeAddress();
     for (var i = 0; i < places.length; i++) {
-        createMarker(places[i]);
+        createMarker(places[i], images[i]);
     }
     zoom = 16 - time / 15;
     map.setZoom(zoom);
@@ -282,6 +284,7 @@ function codeAddress() {
                                         if (!filter) {
                                             createMarker(results[i], img);
                                             places.push(results[i]);
+                                            images.push(img);
                                         }
                                         //console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
                                     });
