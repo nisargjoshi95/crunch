@@ -252,7 +252,6 @@ function codeAddress() {
             function callback(results, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     // TO DO: sort results based on distance
-                    var foundPlaces = false;
 
                     // Here we splice out results that are too far based on user input and traffic
                     var maxTime = parseInt($('#time').val());
@@ -265,7 +264,6 @@ function codeAddress() {
                             if (totalTime < maxTime) {
                                 if ((results[i].rating > 2.5 && (parseInt(results[i].price_level) <= price) || results[i].price_level === 'undefined')) {
                                     console.log(results[i]); // CHANGE THIS
-                                    foundPlaces = true;
                                     // create our marker and get the yelp image
                                     var img;
                                     getYelp(results[i].name, results[i].vicinity, function(error, data) {
@@ -273,18 +271,17 @@ function codeAddress() {
                                         if (error) return;
                                         if (data.businesses.length == 0) return;
                                         img = (data.businesses[0].image_url);
+                                        if (!filter) {
+                                            createMarker(results[i], img);
+                                            places.push(results[i]);
+                                        }
                                         //console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
                                     });
-                                    if (!filter) {
-                                        createMarker(results[i]);
-                                        places.push(results[i]);
-                                    }
+
                                 }
                             }
                         });
-                    }
-                    if (!foundPlaces) {
-                        noResults();
+
                     }
                 } else {
                     noResults();
@@ -335,10 +332,11 @@ function createMarker(place, img) {
     google.maps.event.addListener(marker, 'click', function() {
         // Here we get the travel time
         getTime(place, function(error, travelTime) {
+
             if (error) console.log('got an error', error);
-            infowindow.setContent(place.name + '<br>' + travelTime + '<br>' +
+            infowindow.setContent('<img border="0" src=' + img + ' style="width:200px;height:200px;">' + '<br> <b><center>' + place.name + '<br>' + travelTime + '<br>' +
                 'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating + '<br>' +
-                '<button id="select">' + 'This is what I want' + '</button>');
+                '</b><button id="select">' + 'This is what I want' + '</button> </center>');
             displayTime = travelTime;
             restaurantName = place.name;
         });
