@@ -208,7 +208,7 @@ $(document).ready(function() {
                 $('#instructions li:eq(' + e.step_number + ')').delay(450 * e.step_number).fadeIn(200, function() {
                     map.drawPolyline({
                         path: e.path,
-                        strokeColor: '#131540',
+                        strokeColor: '#598234',
                         strokeOpacity: 0.6,
                         strokeWeight: 6
                     });
