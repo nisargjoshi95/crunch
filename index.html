@@ -1,87 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <!--Import Google Icon Font-->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!--Import materialize.css-->
-  <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css"  media="screen,projection"/>
-  <link tpye="text/css" rel="stylesheet" href="assets/css/style.css"/>
-
-  <!--Let browser know website is optimized for mobile-->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>crunch</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css" media="screen,projection" />
+    <link tpye="text/css" rel="stylesheet" href="assets/css/style.css" />
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>crunch</title>
 </head>
+
 <body>
-  <nav>
-    <div class="nav-wrapper white z-depth-1">
-      <a href="#" class="brand-logo deep-purple-text"><i class="material-icons left">query_builder</i>crunch</a>
+    <nav>
+        <div class="nav-wrapper white z-depth-1">
+            <a href="#" class="brand-logo deep-purple-text"><i class="material-icons left">query_builder</i>crunch</a>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col s4 indigo lighten-2 sidebar">
+            <h5 class="center-align">On a crunch?</h5>
+            <div class="input-field col s12" id="locationDiv">
+                <input id="currentLoc" type="text" class="validate" placeholder="">
+                <label for="currentLoc">I'm at...</label>
+            </div>
+            <div class="input-field col s12">
+                <input id="foodCategory" type="text" class="validate">
+                <label for="foodCategory">I want...</label>
+            </div>
+            <div class="input-field col s12" id="timeDiv">
+                <select id="time">
+                    <option value="" disabled selected>I have...</option>
+                    <option value="15">30 min</option>
+                    <option value="30">1 hr</option>
+                    <option value="45">1.5 hrs</option>
+                    <option value="60">2 hrs</option>
+                    <option value="75">No Rush</option>
+                </select>
+            </div>
+            <div class="input-field col s12" id="travelDiv">
+                <select id='travel'>
+                    <option value="" disabled selected>I'll be...</option>
+                    <option value="Walking">Walking</option>
+                    <option value="Driving">Driving</option>
+                    <option value="Bicycling">Bicycling</option>
+                    <option value="Transit">Transit</option>
+                </select>
+            </div>
+            <div class="input-field col s12" id="priceDiv">
+                <select id='price'>
+                    <option value="" disabled selected>I'll spend...</option>
+                    <option value="1">under $10</option>
+                    <option value="2">under $20</option>
+                    <option value="3">under $30</option>
+                    <option value="4">$30 or more</option>
+                </select>
+            </div>
+            <div class="input-field col s12" id="searchButton">
+                <a class="waves-effect waves-light btn-large deep-purple" id='search'><i class="material-icons left">&#xe8b6</i>Find places!</a>
+                <a class="waves-effect waves-light btn-large deep-purple" id='restart'>Restart</a>
+                <a class="waves-effect waves-light btn-large deep-purple" id='back'>Back</a>
+                <div id="incomplete">Incomplete Input</div>
+            </div>
+            <div id='display'></div>
+            <div id='instructions'></div>
+        </div>
+        <div class="col s8 grey main-content" id="map">
+        </div>
     </div>
-  </nav>
-  <div class="row">
-    <div class="col s4 indigo lighten-2 sidebar">
-      <h5 class="center-align">On a crunch?</h5>
-      <div class="input-field col s12" id="locationDiv">
-        <input id="currentLoc" type="text" class="validate" placeholder="">
-        <label for="currentLoc">I'm at...</label>
-      </div>
-      <div class="input-field col s12">
-        <input id="foodCategory" type="text" class="validate">
-        <label for="foodCategory">I want...</label>
-      </div>
-      <div class="input-field col s12" id="timeDiv">
-        <select id="time">
-          <option value="" disabled selected>I have...</option>
-          <option value="15">30 min</option>
-          <option value="30">1 hr</option>
-          <option value="45">1.5 hrs</option>
-          <option value="60">2 hrs</option>
-          <option value="75">No Rush</option>
-        </select>
-      </div>
-      <div class="input-field col s12" id="travelDiv">
-        <select id='travel'>
-          <option value="" disabled selected>I'll be...</option>
-          <option value="Walking">Walking</option>
-          <option value="Driving">Driving</option>
-          <option value="Bicycling">Bicycling</option>
-          <option value="Transit">Transit</option>
-        </select>
-      </div>
-      <div class="input-field col s12" id="priceDiv">
-      <select id='price'>
-          <option value="" disabled selected>I'll spend...</option>
-          <option value="1">under $10</option>
-          <option value="2">under $20</option>
-          <option value="3">under $30</option>
-          <option value="4">$30 or more</option>
-        </select>
-      </div>
-      <div class="input-field col s12" id="searchButton">
-        <a class="waves-effect waves-light btn-large deep-purple" id='search'><i class="material-icons left">&#xe8b6</i>Find places!</a>
-        <a class="waves-effect waves-light btn-large deep-purple" id='restart'>Restart</a>
-        <a class="waves-effect waves-light btn-large deep-purple" id='back'>Back</a>
-        <div id="incomplete">Incomplete Input</div>
-      </div>
-      <div id='display'></div>
-      <div id='instructions'></div>
+    <div class="row">
+        <div class="card">
+        </div>
     </div>
-    <div class="col s8 grey main-content" id="map">
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="card">
-
-    </div>
-  </div>
-  <!--Import jQuery before materialize.js-->
-  <script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5eqd8ID2uwfcgJ1HDDZLxzvThcV6Kx1A&libraries=places"></script>
-  <script type="text/javascript" src="assets/js/materialize.min.js"></script>
-  <script type="text/javascript" src="assets/js/sha1.js"></script>
-  <script type="text/javascript" src="assets/js/oauth.js"></script>
-  <script type="text/javascript" src="assets/js/yelp.js"></script>
-  <script type="text/javascript" src="assets/js/gmaps.js"></script>
-  <script type="text/javascript" src="assets/js/crunch.js"></script>
+    <!--Import jQuery before materialize.js-->
+    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5eqd8ID2uwfcgJ1HDDZLxzvThcV6Kx1A&libraries=places"></script>
+    <script type="text/javascript" src="assets/js/materialize.min.js"></script>
+    <script type="text/javascript" src="assets/js/sha1.js"></script>
+    <script type="text/javascript" src="assets/js/oauth.js"></script>
+    <script type="text/javascript" src="assets/js/yelp.js"></script>
+    <script type="text/javascript" src="assets/js/gmaps.js"></script>
+    <script type="text/javascript" src="assets/js/crunch.js"></script>
 </body>
+
 </html>
