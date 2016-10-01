@@ -1,4 +1,4 @@
-var map, geocoder, infowindow, time, radius, zoom, price, marker, lat, lng, lat, lng, displayTime, restaurantName;
+var map, geocoder, infowindow, time, radius, zoom, price, marker, lat, lng, displayTime, restaurantName,centerLat, centerLng;
 var filter = false;
 var places = [];
 var images = [];
@@ -99,14 +99,28 @@ $(document).ready(function() {
 			incomplete = true;
 		}
 
-		if (incomplete) {
-			$('#incomplete').show();
-		} else {
-			$('#incomplete').css('display', 'none');
-		}
+        $('#restart').show();
+        $('#instructions').empty();
+        $('#display').empty();
+        var mapCanvas = document.getElementById("map");
+        var mapOptions = {
+            center: new google.maps.LatLng(30.2669444, -97.7427778),
+            zoom: 12,
+            el: '#map',
+        };
+        map = new google.maps.Map(mapCanvas, mapOptions);
+        $('#restart').css('display', 'inline-block');
+        $('select').material_select();
 
-		codeAddress();
-	});
+
+        if (incomplete) {
+            $('#incomplete').show();
+        } else {
+            $('#incomplete').css('display', 'none');
+        }
+
+        codeAddress();
+    });
 
     $('#restart').on('click', function() {
         resetVariables();
@@ -116,13 +130,14 @@ $(document).ready(function() {
         $('#priceDiv').css('border', 'none');
         $('#foodDiv').css('border', 'none');
         $('#incomplete').hide();
+        $('#back').hide();
     });
     //animate Route
     $(document.body).on('click', '#select', function() {
         map = new GMaps({
             el: '#map',
-            lat: map.getCenter().lat(),
-            lng: map.getCenter().lng(),
+            lat: centerLat,
+            lng: centerLng,
             zoom: 14
         });
         console.log(map);
@@ -133,7 +148,7 @@ $(document).ready(function() {
         $('select').material_select();
         var instructions = "";
         map.travelRoute({
-            origin: [map.getCenter().lat(), map.getCenter().lng()],
+            origin: [centerLat, centerLng],
             destination: [lat, lng],
             travelMode: 'driving',
             start: function(e) {},
@@ -253,6 +268,8 @@ function codeAddress() {
             map.setCenter(results[0].geometry.location);
             map.setZoom(zoom);
             map.center = results[0].geometry.location;
+            centerLat = results[0].geometry.location.lat();
+            centerLng = results[0].geometry.location.lng();
             //search nearby restaurants by key terms and set markers and infowindows
             var keyTerm = $('#foodCategory').val().trim();
             infowindow = new google.maps.InfoWindow();
@@ -372,11 +389,13 @@ function clearMarkers() {
 }
 
 function noResults() {
-    var content = 'no results found';
+    var content = 'no results found - please refine your search';
     var infowindow = new google.maps.InfoWindow({
-        content: content
+        content: content,
+        position: map.center
     });
-    infowindow.open(map, marker);
+    infowindow.open(map, map);
+    setTimeout(function() { infowindow.close(); }, 4000);
 }
 
 function priceToDollar(price) {
