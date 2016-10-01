@@ -1,4 +1,6 @@
-var map, geocoder, infowindow, time, radius, zoom, price, marker, lat, lng;
+var map, geocoder, infowindow, time, radius, zoom, price, marker, lat, lng, lat, lng, displayTime, restaurantName;
+var filter = false;
+var places = [];
 
 $(document).ready(function() {
     $('select').material_select();
@@ -64,91 +66,14 @@ $(document).ready(function() {
     }
     // on click, mark startpoint with a marker and recenter to currentLoc
 
-    function codeAddress() {
-        time = parseInt($('#time').val());
-        radius = time / 15 * 800;
-        zoom = 16 - time / 15;
-        price = parseInt($('#price').val());
-        geocoder = new google.maps.Geocoder();
-        var address = $('#currentLoc').val().trim();
-        geocoder.geocode({ 'address': address }, function(results, status) {
-            if (status == 'OK') {
-                var img = {
-                    url: 'http://icons.iconarchive.com/icons/david-renelt/little-icon-people/32/Women-icon.png',
-                    scaledSize: new google.maps.Size(35, 35)
-                };
-                var marker = new google.maps.Marker({
-                    position: results[0].geometry.location,
-                    animation: google.maps.Animation.DROP,
-                    icon: img
-                });
-                marker.setMap(map);
-                map.setCenter(results[0].geometry.location);
-                map.setZoom(zoom);
-                map.center = results[0].geometry.location;
-                //search nearby restaurants by key terms and set markers and infowindows
-                var keyTerm = $('#foodCategory').val().trim();
-                infowindow = new google.maps.InfoWindow();
-                var service = new google.maps.places.PlacesService(map);
-                service.nearbySearch({
-                    location: map.center,
-                    radius: radius,
-                    type: ['restaurant'],
-                    name: keyTerm
-                }, callback);
-
-                function callback(results, status) {
-                    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        // TO DO: sort results based on distance
-
-                        // Here we splice out results that are too far based on user input and traffic
-                        var maxTime = parseInt($('#time').val());
-                        for (let i = 0; i < results.length; i++) {
-                            getTime(results[i], function(error, time) {
-                                if (error) return;
-                                var foundPlaces = false;
-                                // Take the first 2 digits of the time string, parse to integer, and double it to get round-trip minutes
-                                var totalTime = 2 * parseInt(time.substr(0, 2));
-                                if (totalTime < maxTime) {
-                                    if ((results[i].rating > 2.5 && (parseInt(results[i].price_level) <= price) || results[i].price_level === undefined)) {
-                                        console.log(results[i]); // CHANGE THIS
-                                        foundPlaces = true;
-                                        // create our marker and get the yelp image
-                                        var img;
-                                        getYelp(results[i].name, results[i].vicinity, function(error, data) {
-                                            var keywords = data.businesses[0].categories;
-                                            for (var i = 0; i < keywords.length; i++) {
-                                                if (filter) {
-                                                    if (keywords[i][1] == 'vegetarian') { // MAKE THIS A VARIABLE
-                                                        console.log('vegetarian!'); // CREATE MARKER
-                                                    }
-                                                }
-                                            }
-                                            if (error) return;
-                                            if (data.businesses.length == 0) return;
-                                            img = (data.businesses[0].image_url);
-                                            console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
-                                        });
-                                        if (!filter) {
-                                            createMarker(results[i]);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                        if (!foundPlaces) {
-                            noResults();
-                        }
-                    } else {
-                        noResults();
-                    }
-                }
-            }
-        })
-    };
+    codeAddress();
 
     //marker
     $('#search').on('click', function() {
+
+        $('#restart').show();
+        $('select').material_select();
+
         // Throw red borders if user does not make a selection
         var incomplete = false;
         if ($('#foodCategory').val() === '') {
@@ -190,6 +115,10 @@ $(document).ready(function() {
 
         codeAddress();
     });
+
+    $('#restart').on('click', function() {
+        resetVariables();
+    });
     //animate Route
     $(document.body).on('click', '#select', function() {
         map = new GMaps({
@@ -199,6 +128,10 @@ $(document).ready(function() {
             zoom: 14
         });
         console.log(map);
+        $('#display').append('You have chosen ' + restaurantName + '<br>' + 'The estimated on way travel time is ' + displayTime + '<br>' + 'Enjoy your meal!');
+
+        $('#back').show();
+        $('select').material_select();
         map.travelRoute({
             origin: [map.getCenter().lat(), map.getCenter().lng()],
             destination: [lat, lng],
@@ -208,7 +141,7 @@ $(document).ready(function() {
                 $('#instructions li:eq(' + e.step_number + ')').delay(450 * e.step_number).fadeIn(200, function() {
                     map.drawPolyline({
                         path: e.path,
-                        strokeColor: '#131540',
+                        strokeColor: '#598234',
                         strokeOpacity: 0.6,
                         strokeWeight: 6
                     });
@@ -217,85 +150,213 @@ $(document).ready(function() {
         });
     });
 
-    function getTime(place, callback) {
 
-        var start = $('#currentLoc').val().trim();
-        var end = place.geometry.location;
-        var travel = $('#travel').val().trim().toUpperCase();
-
-        var request = {
-            origin: start,
-            destination: end,
-            drivingOptions: {
-                departureTime: new Date(),
-                trafficModel: 'pessimistic'
-            },
-            travelMode: travel,
-            unitSystem: google.maps.UnitSystem.IMPERIAL
-        };
-
-        var directionsService = new google.maps.DirectionsService();
-        directionsService.route(request, function(result, status) {
-            // result object can be used to display the directions
-            if (status == 'OK') {
-                // Return travel time
-                callback(null, result.routes[0].legs[0].duration.text);
-            } else {
-                callback('Status not okay.');
-            }
-        });
-    }
-
-    function createMarker(place) {
-
-        var placeLoc = place.geometry.location;
-        marker = new google.maps.Marker({
-            map: map,
-            position: place.geometry.location
-        });
-
-        google.maps.event.addListener(marker, 'click', function() {
-            // Here we get the travel time
-            getTime(place, function(error, travelTime) {
-                if (error) console.log('got an error', error);
-                infowindow.setContent(place.name + '<br>' + travelTime + '<br>' +
-                    'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating + '<br>' +
-                    '<button id="select">' + 'This is what I want' + '</button>');
-            });
-            infowindow.open(map, this);
-            lat = place.geometry.location.lat();
-            lng = place.geometry.location.lng();
-        });
-    }
-
-    function clearMarkers() {
-        setMapOnAll(null);
-        marker = [];
-    }
-
-    function noResults() {
-        var content = 'no results found';
-        var infowindow = new google.maps.InfoWindow({
-            content: content
-        });
-        infowindow.open(map, marker);
-    }
 
 });
 
 function resetVariables() {
-	map = new google.maps.Map(mapCanvas, mapOptions);
-	geocoder = new google.maps.Geocoder();
-	infoWindow = new google.maps.InfoWindow({ map: map });
-	time = parseInt($('#time').val());
-	radius = time / 15 * 800;
-	zoom = 16 - time / 15;
-	price = 0;
-    var marker = new google.maps.Marker({
-    position: results[0].geometry.location,
-    animation: google.maps.Animation.DROP,
-    icon: img
-	});
-	lat = 0;
-	long = 0;
+    //$('#currentLoc').val('');
+    $('#foodCategory').val('');
+    //$('#time').val(0);
+    //$('#time').attr('selectedIndex', 0);
+    $('#travel').attr('selectedIndex', 0);
+    $('#price').attr('selectedIndex', 0);
+    $('#price').val(0);
+    $('#travel').val(0);
+    $('#restart').css('display', 'none');
+    var mapCanvas = document.getElementById("map");
+    var mapOptions = {
+        center: new google.maps.LatLng(30.2669444, -97.7427778),
+        zoom: 12,
+        el: '#map',
+    };
+    map = new google.maps.Map(mapCanvas, mapOptions);
+    $('#display').html('');
+    $('#instructions').html('');
+    places = [];
+    $('select').material_select();
+}
+
+$('#back').on('click', function() {
+    $('#back').hide();
+    var mapCanvas = document.getElementById("map");
+    var mapOptions = {
+        center: new google.maps.LatLng(30.2669444, -97.7427778),
+        zoom: 12,
+        el: '#map',
+    };
+    map = new google.maps.Map(mapCanvas, mapOptions);
+    $('#display').html('');
+    $('#instructions').html('');
+    //codeAddress();
+    for (var i = 0; i < places.length; i++) {
+        createMarker(places[i]);
+    }
+    zoom = 16 - time / 15;
+    map.setZoom(zoom);
+    //experimental
+    geocoder = new google.maps.Geocoder();
+    var address = $('#currentLoc').val().trim();
+    geocoder.geocode({ 'address': address }, function(results, status) {
+        if (status == 'OK') {
+            var img = {
+                url: 'http://icons.iconarchive.com/icons/david-renelt/little-icon-people/32/Women-icon.png',
+                scaledSize: new google.maps.Size(35, 35)
+            };
+            var marker = new google.maps.Marker({
+                position: results[0].geometry.location,
+                animation: google.maps.Animation.DROP,
+                icon: img
+            });
+            marker.setMap(map);
+            map.setCenter(results[0].geometry.location);
+            map.setZoom(zoom);
+        }
+
+    });
+});
+
+function codeAddress() {
+    time = parseInt($('#time').val());
+    radius = time / 15 * 1000;
+    zoom = 16 - time / 15;
+    price = parseInt($('#price').val());
+    geocoder = new google.maps.Geocoder();
+    var address = $('#currentLoc').val().trim();
+    geocoder.geocode({ 'address': address }, function(results, status) {
+        if (status == 'OK') {
+            var img = {
+                url: 'http://icons.iconarchive.com/icons/david-renelt/little-icon-people/32/Women-icon.png',
+                scaledSize: new google.maps.Size(35, 35)
+            };
+            var marker = new google.maps.Marker({
+                position: results[0].geometry.location,
+                animation: google.maps.Animation.DROP,
+                icon: img
+            });
+            marker.setMap(map);
+            map.setCenter(results[0].geometry.location);
+            map.setZoom(zoom);
+            map.center = results[0].geometry.location;
+            //search nearby restaurants by key terms and set markers and infowindows
+            var keyTerm = $('#foodCategory').val().trim();
+            infowindow = new google.maps.InfoWindow();
+            var service = new google.maps.places.PlacesService(map);
+            service.nearbySearch({
+                location: map.center,
+                radius: radius,
+                type: ['restaurant'],
+                name: keyTerm
+            }, callback);
+
+            function callback(results, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    // TO DO: sort results based on distance
+                    var foundPlaces = false;
+
+                    // Here we splice out results that are too far based on user input and traffic
+                    var maxTime = parseInt($('#time').val());
+                    for (let i = 0; i < results.length; i++) {
+                        getTime(results[i], function(error, time) {
+                            if (error) return;
+
+                            // Take the first 2 digits of the time string, parse to integer, and double it to get round-trip minutes
+                            var totalTime = 2 * parseInt(time.substr(0, 2));
+                            if (totalTime < maxTime) {
+                                if ((results[i].rating > 2.5 && (parseInt(results[i].price_level) <= price) || results[i].price_level === 'undefined')) {
+                                    console.log(results[i]); // CHANGE THIS
+                                    foundPlaces = true;
+                                    // create our marker and get the yelp image
+                                    var img;
+                                    getYelp(results[i].name, results[i].vicinity, function(error, data) {
+                                        var keywords = data.businesses[0].categories;
+                                        if (error) return;
+                                        if (data.businesses.length == 0) return;
+                                        img = (data.businesses[0].image_url);
+                                        //console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
+                                    });
+                                    if (!filter) {
+                                        createMarker(results[i]);
+                                        places.push(results[i]);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    if (!foundPlaces) {
+                        noResults();
+                    }
+                } else {
+                    noResults();
+                }
+            }
+        }
+    })
+}
+
+function getTime(place, callback) {
+
+    var start = $('#currentLoc').val().trim();
+    var end = place.geometry.location;
+    var travel = $('#travel').val().trim().toUpperCase();
+
+    var request = {
+        origin: start,
+        destination: end,
+        drivingOptions: {
+            departureTime: new Date(),
+            trafficModel: 'pessimistic'
+        },
+        travelMode: travel,
+        unitSystem: google.maps.UnitSystem.IMPERIAL
+    };
+
+    var directionsService = new google.maps.DirectionsService();
+    directionsService.route(request, function(result, status) {
+        // result object can be used to display the directions
+        if (status == 'OK') {
+            // Return travel time
+            callback(null, result.routes[0].legs[0].duration.text);
+        } else {
+            callback('Status not okay.');
+        }
+    });
+}
+
+function createMarker(place, img) {
+
+
+    var placeLoc = place.geometry.location;
+    marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+        // Here we get the travel time
+        getTime(place, function(error, travelTime) {
+            if (error) console.log('got an error', error);
+            infowindow.setContent(place.name + '<br>' + travelTime + '<br>' +
+                'price: ' + place.price_level + '<br>' + 'rating: ' + place.rating + '<br>' +
+                '<button id="select">' + 'This is what I want' + '</button>');
+            displayTime = travelTime;
+            restaurantName = place.name;
+        });
+        infowindow.open(map, this);
+        lat = place.geometry.location.lat();
+        lng = place.geometry.location.lng();
+    });
+}
+
+function clearMarkers() {
+    setMapOnAll(null);
+    marker = [];
+}
+
+function noResults() {
+    var content = 'no results found';
+    var infowindow = new google.maps.InfoWindow({
+        content: content
+    });
+    infowindow.open(map, marker);
 }

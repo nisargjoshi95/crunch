@@ -48,3 +48,18 @@ html, body, .row, .sidebar, .row .col.s8.main-content {
 	float:left;
 	width:800px;
 }
+
+#restart {
+	display: none;
+	width: 140px;
+}
+
+#back {
+	display: none;
+	width: 80px;
+}
+
+#display {	
+	float:left;
+	width:800px;
+}
