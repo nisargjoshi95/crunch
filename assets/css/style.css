@@ -48,6 +48,7 @@ idebar, .row .col.s8.main-content {
 #instructions{
 	float:left;
 	width:800px;
+	height: 204px;
 }
 
 #restart {
