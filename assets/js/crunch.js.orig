@@ -70,6 +70,7 @@ $(document).ready(function() {
     codeAddress();
 
     //marker
+<<<<<<< HEAD
 	$('#search').on('click',function(){
 		// Throw red borders if user does not make a selection
 		var incomplete = false;
@@ -85,19 +86,30 @@ $(document).ready(function() {
 		}
 		if ($('#time').val() === null) {
 			$('#time').focus();
-			$('#timeDiv').css({color:'red'});
+			$('#timeDiv .select-dropdown').css({color:'red'});
 			incomplete = true;
 		}
 		if ($('#travel').val() === null) {
 			$("#travel").focus();
-			$("#travelDiv").css({color:"red"});
+			$("#travelDiv .select-dropdown").css({color:"red"});
 			incomplete = true;
 		}
 		if ($('#price').val() === null) {
 			$("#price").focus();
-			$("#priceDiv").css({color:"red"});
+			$("#priceDiv .select-dropdown").css({color:"red"});
 			incomplete = true;
 		}
+
+		if (incomplete) {
+			$('#incomplete').show();
+		} else {
+			$('#incomplete').css('display', 'none');
+		}
+
+		codeAddress();
+	});
+=======
+    $('#search').on('click', function() {
 
         $('#restart').show();
         $('#instructions').empty();
@@ -112,6 +124,38 @@ $(document).ready(function() {
         $('#restart').css('display', 'inline-block');
         $('select').material_select();
 
+        // Throw red borders if user does not make a selection
+        var incomplete = false;
+        if ($('#foodCategory').val() === '') {
+            $('#foodDiv').css('border', 'solid red 2px');
+            incomplete = true;
+        } else {
+            $('#foodDiv').css('border', 'none');
+        }
+        if ($('#currentLoc').val() === '') {
+            $('#locationDiv').css('border', 'solid red 2px');
+            incomplete = true;
+        } else {
+            $('#locationDiv').css('border', 'none');
+        }
+        if ($('#time').val() === null) {
+            $('#timeDiv').css('border', 'solid red 2px');
+            incomplete = true;
+        } else {
+            $('#timeDiv').css('border', 'none');
+        }
+        if ($('#travel').val() === null) {
+            $('#travelDiv').css('border', 'solid red 2px');
+            incomplete = true;
+        } else {
+            $('#travelDiv').css('border', 'none');
+        }
+        if ($('#price').val() === null) {
+            $('#priceDiv').css('border', 'solid red 2px');
+            incomplete = true;
+        } else {
+            $('#priceDiv').css('border', 'none');
+        }
 
         if (incomplete) {
             $('#incomplete').show();
@@ -121,6 +165,7 @@ $(document).ready(function() {
 
         codeAddress();
     });
+>>>>>>> dd4f4af1cfe072fe2cc406d423b96fa480ded417
 
     $('#restart').on('click', function() {
         resetVariables();
@@ -311,8 +356,11 @@ function codeAddress() {
                                         //console.log(img); // CHANGE THIS TO DO WHAT WE WANT WITH THE YELP IMAGES
                                     });
 
-                                }
-                            }
+                                } 
+
+                            } else {
+				                    noResults();
+				                } 
                         });
 
                     }
