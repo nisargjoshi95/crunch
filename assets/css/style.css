@@ -96,6 +96,6 @@ span.stars span {
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
     [class*="col-"] {
-        width: 25%;
+        width: 20%;
     }
 }
